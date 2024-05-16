@@ -23,14 +23,14 @@ age = st.number_input('Usia', min_value=0, max_value=100, value=0)
 if st.button('Prediksi Risiko Diabetes'):
     # Buat dataframe dari input pengguna
     input_data = pd.DataFrame({
-        'pregnancies': [pregnancies],
-        'glucose': [glucose],
-        'blood_pressure': [blood_pressure],
-        'skin_thickness': [skin_thickness],
-        'insulin': [insulin],
-        'bmi': [bmi],
-        'dpf': [dpf],
-        'age': [age]
+        'Pregnancies': [pregnancies],
+        'Glucose': [glucose],
+        'Blood_pressure': [blood_pressure],
+        'Skin_Thickness': [skin_thickness],
+        'Insulin': [insulin],
+        'BMI': [bmi],
+        'DiabetesPedigreeFunction': [dpf],
+        'Age': [age]
     })
     
     # Prediksi menggunakan model
