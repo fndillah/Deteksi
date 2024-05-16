@@ -25,8 +25,8 @@ if st.button('Prediksi Risiko Diabetes'):
     input_data = pd.DataFrame({
         'Pregnancies': [pregnancies],
         'Glucose': [glucose],
-        'Blood_pressure': [blood_pressure],
-        'Skin_Thickness': [skin_thickness],
+        'BloodPressure': [blood_pressure],
+        'SkinThickness': [skin_thickness],
         'Insulin': [insulin],
         'BMI': [bmi],
         'DiabetesPedigreeFunction': [dpf],
