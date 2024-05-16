@@ -1,37 +1,62 @@
-import pickle
 import streamlit as st
+import pandas as pd
+import joblib
 
-#read model
-diabetes_model = pickle.load(open('diabetes_model.sav',"rb"))
+# Load model
+model = joblib.load('diabetes_model.sav')
 
-st.title('Sistem Pembuat Keputusan Diabetes Menggunakan Decision Tree')
-st.sidebar.header('Variable input')
+# Judul aplikasi
+st.title('Sistem Penunjang Keputusan Deteksi Diabetes')
 
-user_input = st.sidebar.text_input("Pregnancies")
+# Input pengguna
+st.header('Masukkan Parameter Kesehatan:')
+pregnancies = st.number_input('Jumlah Kehamilan', min_value=0, max_value=20, value=0)
+glucose = st.number_input('Kadar Glukosa', min_value=0, max_value=200, value=0)
+blood_pressure = st.number_input('Tekanan Darah Diastolik (mm Hg)', min_value=0, max_value=150, value=0)
+skin_thickness = st.number_input('Ketebalan Lipatan Kulit (mm)', min_value=0, max_value=100, value=0)
+insulin = st.number_input('Insulin (mu U/ml)', min_value=0, max_value=900, value=0)
+bmi = st.number_input('Indeks Massa Tubuh (BMI)', min_value=0.0, max_value=70.0, value=0.0)
+dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=3.0, value=0.0)
+age = st.number_input('Usia', min_value=0, max_value=120, value=0)
 
-# Convert the user input to an integer if it's a valid number
-if user_input.isdigit():
-    slider_value = int(user_input)
-else:
-    slider_value = 0  # Default value if the input is not a valid number
+# Tombol prediksi
+if st.button('Prediksi Risiko Diabetes'):
+    # Buat dataframe dari input pengguna
+    input_data = pd.DataFrame({
+        'pregnancies': [pregnancies],
+        'glucose': [glucose],
+        'blood_pressure': [blood_pressure],
+        'skin_thickness': [skin_thickness],
+        'insulin': [insulin],
+        'bmi': [bmi],
+        'dpf': [dpf],
+        'age': [age]
+    })
+    
+    # Prediksi menggunakan model
+    prediction = model.predict(input_data)
+    
+    # Tampilkan hasil prediksi
+    if prediction[0] == 1:
+        st.error('Berdasarkan data yang Anda masukkan, Anda berisiko terkena diabetes.')
+        st.subheader('Rekomendasi:')
+        st.write("""
+            - **Pantau kadar gula darah Anda secara rutin.**
+            - **Perhatikan pola makan Anda dengan mengurangi asupan gula dan karbohidrat olahan.**
+            - **Lakukan aktivitas fisik secara teratur, seperti berolahraga minimal 30 menit setiap hari.**
+            - **Jaga berat badan ideal Anda untuk mengurangi risiko diabetes.**
+            - **Konsultasikan dengan dokter atau ahli gizi untuk mendapatkan rencana diet yang sesuai.**
+            - **Hindari merokok dan kurangi konsumsi alkohol.**
+        """)
+    else:
+        st.success('Berdasarkan data yang Anda masukkan, Anda tidak berisiko terkena diabetes.')
+        st.subheader('Rekomendasi Umum:')
+        st.write("""
+            - **Tetap jaga pola makan sehat dan seimbang.**
+            - **Lakukan aktivitas fisik secara rutin untuk menjaga kebugaran tubuh.**
+            - **Jaga berat badan ideal dan hindari obesitas.**
+            - **Pantau kesehatan Anda secara berkala dengan memeriksa kadar gula darah dan tekanan darah.**
+            - **Hindari kebiasaan buruk seperti merokok dan konsumsi alkohol berlebihan.**
+        """)
 
-pregnancies = st.sidebar.slider('Pregnancies',  min_value=0,  max_value=20,  step=1, value=slider_value)
-glucose = st.sidebar.slider('Glucose', min_value=60, max_value=240, step=1)
-blood_pressure = st.sidebar.slider('Blood Pressure', min_value=0, max_value=140, step=1)
-skin_thickness = st.sidebar.slider('Skin Thickness',  min_value=0,  max_value=100,  step=1)
-insulin = st.sidebar.slider('Insulin',  min_value=0,  max_value=1000,  step=1)
-bmi = st.sidebar.slider('BMI',  min_value=0.0,  max_value=200.0,  step=0.01)
-pedigree = st.sidebar.slider('Diabetes Pedigree Function',  min_value=0.0,  max_value=3.0,  step=0.001)
-age = st.sidebar.slider('Age',  min_value=0,  max_value=100,  step=1)
-
-diabetes_diagnose = ''
-
-if st.button('Test Prediksi Diabetes') :
-    diabetes_predict = ([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, pedigree, age]])
-
-    if (diabetes_predict[0] == 1):
-        diabetes_diagnose = 'Terdeteksi Diabetes'
-    else :
-        diabetes_diagnose = 'Tidak Terdeteksi Diabetes'
-
-st.write(diabetes_diagnose)
+# Tidak perlu memanggil st._run() atau fungsi lainnya untuk menjalankan aplikasi
